@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0b0c">
+<title>Barbearia Tarantino | Agendamento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --surface: #161617;
+    --surface-2: #1f1f21;
+    --line: #2d2d30;
+    --gold: #c9a24b;
+    --gold-light: #e6c26e;
+    --text: #f2ede2;
+    --muted: #9b958a;
+    --danger: #d9534f;
+    --ok: #5cb85c;
+    --radius: 14px;
+    --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background:
+      radial-gradient(900px 500px at 50% -10%, rgba(201,162,75,.12), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    line-height: 1.5;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view { display: none; animation: fade .35s ease; }
+  .view.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Marca ---------- */
+  .brand { text-align: center; }
+  .brand .mark {
+    width: 84px; height: 84px; margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: grid; place-items: center;
+    background: linear-gradient(145deg, #1c1c1e, #0e0e0f);
+    box-shadow: 0 0 0 6px rgba(201,162,75,.08), 0 12px 30px rgba(0,0,0,.5);
+    font-family: var(--serif);
+    font-size: 38px; color: var(--gold-light);
+  }
+  .brand h1 {
+    font-family: var(--serif);
+    font-size: clamp(30px, 8vw, 40px);
+    letter-spacing: .5px;
+    line-height: 1.1;
+  }
+  .brand h1 span { color: var(--gold-light); }
+  .brand p { color: var(--muted); margin-top: 8px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+
+  .home { justify-content: center; }
+  #view-home { margin: auto 0; }
+  .home-actions { display: grid; gap: 14px; margin-top: 44px; }
+
+  /* ---------- Botões ---------- */
+  .btn {
+    font-family: var(--sans);
+    font-size: 16px; font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+    width: 100%;
+    min-height: 54px;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible, .card:focus-visible, .slot:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--gold-light); outline-offset: 2px;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #151208; }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--gold); }
+  .btn-outline-gold { background: var(--surface); border-color: var(--gold); color: var(--gold-light); }
+  .btn-outline-gold:hover { background: #1d1a12; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .btn-big { padding: 22px 20px; font-size: 18px; }
+  .btn-small { width: auto; min-height: 40px; padding: 8px 14px; font-size: 14px; border-radius: 10px; }
+  .btn-danger { background: transparent; border-color: #4a2a29; color: #ef8f8c; }
+  .btn-danger:hover { border-color: var(--danger); }
+
+  /* ---------- Topo das telas ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .topbar .name { font-family: var(--serif); font-size: 18px; color: var(--gold-light); }
+  .link-back {
+    background: none; border: none; color: var(--muted);
+    font: inherit; font-size: 14px; cursor: pointer; padding: 8px 4px;
+  }
+  .link-back:hover { color: var(--text); }
+
+  h2.title { font-family: var(--serif); font-size: 26px; margin-bottom: 6px; }
+  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+  }
+
+  /* ---------- Formulários ---------- */
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; letter-spacing: .4px; text-transform: uppercase; }
+  input[type="text"], input[type="password"], input[type="date"], select {
+    width: 100%;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 14px;
+    font: inherit; font-size: 16px;
+    min-height: 52px;
+    color-scheme: dark;
+  }
+  input:focus, select:focus { border-color: var(--gold); outline: none; }
+  .field { margin-bottom: 18px; }
+
+  .msg { min-height: 22px; font-size: 14px; margin-top: 12px; }
+  .msg.ok { color: var(--ok); }
+  .msg.err { color: #ef8f8c; }
+
+  /* ---------- Passos do cliente ---------- */
+  .progress { display: flex; gap: 8px; margin-bottom: 24px; }
+  .progress i { flex: 1; height: 4px; border-radius: 4px; background: var(--line); transition: background .3s; }
+  .progress i.done { background: var(--gold); }
+
+  .step { display: none; }
+  .step.active { display: block; animation: fade .3s ease; }
+
+  .cards { display: grid; gap: 12px; margin-bottom: 22px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    cursor: pointer; text-align: left; color: var(--text);
+    font: inherit; width: 100%;
+    transition: border-color .2s, background .2s, transform .15s;
+  }
+  .card:hover { border-color: #5a4a22; }
+  .card:active { transform: scale(.99); }
+  .card.selected { border-color: var(--gold); background: #1b1810; box-shadow: 0 0 0 1px var(--gold) inset; }
+  .card .c-name { font-weight: 600; font-size: 17px; }
+  .card .c-desc { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .card .c-price { font-family: var(--serif); font-size: 22px; color: var(--gold-light); white-space: nowrap; }
+
+  .slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 6px 0 22px; }
+  @media (min-width: 400px) { .slots { grid-template-columns: repeat(3, 1fr); } }
+  .slot {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 12px 6px;
+    font: inherit; font-size: 15px; font-weight: 500;
+    cursor: pointer; min-height: 52px;
+    transition: border-color .2s, background .2s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;
+  }
+  .slot small { font-size: 11px; font-weight: 400; margin-top: 2px; }
+  .slot:hover:not(:disabled) { border-color: var(--gold); }
+  .slot.selected { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #151208; border-color: var(--gold-light); }
+  .slot:disabled { background: #141415; color: #5d5a54; border-style: dashed; cursor: not-allowed; }
+  .slots-hint { color: var(--muted); font-size: 14px; padding: 6px 0 22px; }
+
+  .nav { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 8px; }
+  .nav.single { grid-template-columns: 1fr; }
+
+  .summary { margin-bottom: 20px; }
+  .summary dl { display: grid; grid-template-columns: auto 1fr; gap: 12px 16px; }
+  .summary dt { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .4px; align-self: center; }
+  .summary dd { font-weight: 500; text-align: right; word-break: break-word; }
+  .summary .total dd { font-family: var(--serif); color: var(--gold-light); font-size: 24px; }
+  .note { color: var(--muted); font-size: 13px; text-align: center; margin-top: 14px; }
+
+  /* ---------- Painel do barbeiro ---------- */
+  .row { display: grid; gap: 14px; }
+  @media (min-width: 440px) { .row.two { grid-template-columns: 1fr 1fr; } }
+
+  .list-title { font-family: var(--serif); font-size: 20px; margin: 28px 0 12px; display: flex; align-items: center; justify-content: space-between; }
+  .list-title .count { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+  .blocked-list { list-style: none; display: grid; gap: 10px; }
+  .blocked-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
+  }
+  .blocked-item .when { font-weight: 600; }
+  .blocked-item .when span { color: var(--gold-light); margin-left: 8px; }
+  .blocked-item .past { color: var(--muted); font-size: 12px; margin-left: 8px; font-weight: 400; }
+  .empty { text-align: center; color: var(--muted); padding: 24px 12px; border: 1px dashed var(--line); border-radius: 14px; font-size: 14px; }
+
+  .pass-box { margin-top: 28px; }
+  .pass-box summary { cursor: pointer; font-weight: 600; list-style-position: inside; }
+  .pass-box[open] summary { margin-bottom: 18px; }
+  .pass-box summary:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+  [hidden] { display: none !important; }
+
+  footer.foot { margin-top: auto; padding-top: 32px; text-align: center; color: #5f5a50; font-size: 12px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="app" id="app">
+
+  <!-- ===================== TELA INICIAL ===================== -->
+  <section class="view active" id="view-home" aria-labelledby="home-title">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">T</div>
+      <h1 id="home-title">Barbearia <span>Tarantino</span></h1>
+      <p>Estilo &bull; Tradição &bull; Precisão</p>
+    </div>
+    <div class="home-actions">
+      <button class="btn btn-primary btn-big" id="btn-client" type="button">Sou Cliente</button>
+      <button class="btn btn-outline-gold btn-big" id="btn-barber" type="button">Sou Barbeiro</button>
+    </div>
+  </section>
+
+  <!-- ===================== BARBEIRO: LOGIN ===================== -->
+  <section class="view" id="view-barber-login" aria-labelledby="login-title">
+    <div class="topbar">
+      <button class="link-back" type="button" data-go="home">&larr; Voltar</button>
+      <span class="name">Tarantino</span>
+    </div>
+    <h2 class="title" id="login-title">Acesso do Barbeiro</h2>
+    <p class="subtitle" id="login-sub">Verificando acesso...</p>
+    <div class="panel" id="login-form">
+      <div class="field">
+        <label for="barber-pass" id="lbl-pass">Senha</label>
+        <input type="password" id="barber-pass" placeholder="Digite sua senha" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="field" id="field-confirm" hidden>
+        <label for="barber-pass2">Repita a senha</label>
+        <input type="password" id="barber-pass2" placeholder="Digite a mesma senha" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      </div>
+      <button class="btn btn-primary" type="button" id="btn-login" disabled>Aguarde...</button>
+      <p class="msg" id="login-msg" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ===================== BARBEIRO: PAINEL ===================== -->
+  <section class="view" id="view-barber-panel" aria-labelledby="panel-title">
+    <div class="topbar">
+      <button class="link-back" type="button" id="btn-logout">&larr; Sair</button>
+      <span class="name">Tarantino</span>
+    </div>
+    <h2 class="title" id="panel-title">Painel de Horários</h2>
+    <p class="subtitle">Bloqueie os horários em que você estiver ocupado. Eles aparecem como indisponíveis para os clientes.</p>
+
+    <div class="panel">
+      <div class="row two">
+        <div class="field">
+          <label for="block-date">Data</label>
+          <input type="date" id="block-date">
+        </div>
+        <div class="field">
+          <label for="block-time">Horário</label>
+          <select id="block-time"></select>
+        </div>
+      </div>
+      <button class="btn btn-primary" type="button" id="btn-block">Bloquear Horário</button>
+      <p class="msg" id="block-msg" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="list-title">
+      <span>Horários bloqueados</span>
+      <span class="count" id="block-count"></span>
+    </div>
+    <ul class="blocked-list" id="blocked-list"></ul>
+
+    <details class="panel pass-box" id="pass-box">
+      <summary>Alterar senha</summary>
+      <div class="field">
+        <label for="pass-current">Senha atual</label>
+        <input type="password" id="pass-current" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="pass-new">Nova senha (mínimo de 6 caracteres)</label>
+        <input type="password" id="pass-new" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      </div>
+      <button class="btn btn-ghost" type="button" id="btn-change-pass">Salvar nova senha</button>
+      <p class="msg" id="pass-msg" role="status" aria-live="polite"></p>
+    </details>
+  </section>
+
+  <!-- ===================== CLIENTE: AGENDAMENTO ===================== -->
+  <section class="view" id="view-client" aria-labelledby="client-title">
+    <div class="topbar">
+      <button class="link-back" type="button" data-go="home">&larr; Início</button>
+      <span class="name">Tarantino</span>
+    </div>
+
+    <div class="progress" id="progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+    <!-- Passo 1 -->
+    <div class="step active" data-step="1">
+      <h2 class="title" id="client-title">Escolha o serviço</h2>
+      <p class="subtitle">Passo 1 de 4</p>
+      <div class="cards" id="service-cards" role="radiogroup" aria-label="Serviços"></div>
+      <div class="nav single">
+        <button class="btn btn-primary" type="button" id="s1-next" disabled>Continuar</button>
+      </div>
+    </div>
+
+    <!-- Passo 2 -->
+    <div class="step" data-step="2">
+      <h2 class="title">Data e horário</h2>
+      <p class="subtitle">Passo 2 de 4</p>
+      <div class="field">
+        <label for="client-date">Data</label>
+        <input type="date" id="client-date">
+      </div>
+      <label>Horários</label>
+      <div id="client-slots-wrap" aria-live="polite"></div>
+      <div class="nav">
+        <button class="btn btn-ghost" type="button" data-prev>Voltar</button>
+        <button class="btn btn-primary" type="button" id="s2-next" disabled>Continuar</button>
+      </div>
+    </div>
+
+    <!-- Passo 3 -->
+    <div class="step" data-step="3">
+      <h2 class="title">Seus dados</h2>
+      <p class="subtitle">Passo 3 de 4</p>
+      <div class="field">
+        <label for="client-name">Seu nome</label>
+        <input type="text" id="client-name" placeholder="Como podemos te chamar?" maxlength="60" autocomplete="name">
+      </div>
+      <p class="msg" id="name-msg" role="status" aria-live="polite"></p>
+      <div class="nav">
+        <button class="btn btn-ghost" type="button" data-prev>Voltar</button>
+        <button class="btn btn-primary" type="button" id="s3-next">Continuar</button>
+      </div>
+    </div>
+
+    <!-- Passo 4 -->
+    <div class="step" data-step="4">
+      <h2 class="title">Confirmar agendamento</h2>
+      <p class="subtitle">Passo 4 de 4</p>
+      <div class="panel summary">
+        <dl>
+          <dt>Nome</dt><dd id="sum-name"></dd>
+          <dt>Serviço</dt><dd id="sum-service"></dd>
+          <dt>Dia</dt><dd id="sum-date"></dd>
+          <dt>Horário</dt><dd id="sum-time"></dd>
+          <dt>Valor</dt><dd id="sum-price" class="total"></dd>
+        </dl>
+      </div>
+      <p class="msg err" id="confirm-msg" role="alert" aria-live="assertive"></p>
+      <div class="nav">
+        <button class="btn btn-ghost" type="button" data-prev>Voltar</button>
+        <button class="btn btn-primary" type="button" id="btn-finish">Concluir Agendamento</button>
+      </div>
+      <p class="note">Você será levado ao WhatsApp com a mensagem pronta. É só enviar.</p>
+    </div>
+  </section>
+
+  <footer class="foot">Barbearia Tarantino</footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================
+     CONFIGURAÇÕES — edite aqui
+     ===================================================== */
+  var CONFIG = {
+    NOME: 'Barbearia Tarantino',
+    WHATSAPP: '551133845530',          // DDI + DDD + número, só dígitos
+    SUPABASE_URL: 'https://tgetqxoidvmaqvfjkblj.supabase.co',
+    SUPABASE_KEY: 'sb_publishable_bOi7SK8Q-DT4PZq24mj1QA_WhAA9jqv', // chave pública (feita para ficar no site)
+    HORA_INICIAL: 9,
+    HORA_FINAL: 19,                     // inclusive (19:00)
+    SENHA_MIN: 6
+  };
+
+  var SERVICES = [
+    { id: 'corte', name: 'Corte Simples', desc: 'Corte na máquina ou tesoura', price: 30 },
+    { id: 'barba', name: 'Barba', desc: 'Barba na navalha com toalha quente', price: 25 },
+    { id: 'combo', name: 'Combo Cabelo e Barba', desc: 'O pacote completo', price: 50 }
+  ];
+
+  var HOURS = [];
+  for (var h = CONFIG.HORA_INICIAL; h <= CONFIG.HORA_FINAL; h++) {
+    HOURS.push(String(h).padStart(2, '0') + ':00');
+  }
+
+  /* =====================================================
+     UTILITÁRIOS
+     ===================================================== */
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function isoToBR(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+  function brl(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+  function isValidISODate(s) { return /^\d{4}-\d{2}-\d{2}$/.test(s || ''); }
+
+  function isPastSlot(dateISO, time) {
+    var today = todayISO();
+    if (dateISO < today) return true;
+    if (dateISO > today) return false;
+    var parts = time.split(':');
+    var slot = new Date();
+    slot.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+    return slot <= new Date();
+  }
+
+  function setMsg(el, text, kind) {
+    el.textContent = text || '';
+    el.className = 'msg' + (kind ? ' ' + kind : '');
+  }
+
+  /* =====================================================
+     BANCO DE DADOS — Supabase (API REST)
+     ===================================================== */
+  function api(path, options) {
+    options = options || {};
+    return fetch(CONFIG.SUPABASE_URL + '/rest/v1/' + path, {
+      method: options.method || 'GET',
+      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: options.body ? JSON.stringify(options.body) : undefined
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        var data = null;
+        try { data = txt ? JSON.parse(txt) : null; } catch (e) { data = null; }
+        if (!res.ok) {
+          var err = new Error((data && data.message) || ('http_' + res.status));
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  function rpc(name, args) { return api('rpc/' + name, { method: 'POST', body: args || {} }); }
+
+  function errMsg(e) {
+    var m = (e && e.message) || '';
+    if (m === 'senha_invalida') return 'Senha incorreta.';
+    if (m === 'senha_invalida_tamanho') return 'A senha precisa ter de ' + CONFIG.SENHA_MIN + ' a 72 caracteres.';
+    if (m === 'senha_ja_definida') return 'A senha já foi criada. Entre com ela.';
+    if (m === 'data_passada') return 'Não é possível bloquear uma data que já passou.';
+    return 'Não foi possível falar com o servidor. Confira a internet e tente de novo.';
+  }
+
+  var blockedCache = [];
+
+  function fetchBlocked() {
+    return api('horarios_bloqueados?select=data,hora&data=gte.' + todayISO() + '&order=data.asc,hora.asc')
+      .then(function (rows) {
+        blockedCache = Array.isArray(rows) ? rows : [];
+        return blockedCache;
+      });
+  }
+
+  function isBlocked(dateISO, time) {
+    return blockedCache.some(function (b) { return b.data === dateISO && b.hora === time; });
+  }
+
+  /* =====================================================
+     NAVEGAÇÃO ENTRE TELAS
+     ===================================================== */
+  var views = {
+    'home': $('view-home'),
+    'barber-login': $('view-barber-login'),
+    'barber-panel': $('view-barber-panel'),
+    'client': $('view-client')
+  };
+
+  function showView(name) {
+    Object.keys(views).forEach(function (k) { views[k].classList.toggle('active', k === name); });
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('[data-go]').forEach(function (el) {
+    el.addEventListener('click', function () { showView(el.getAttribute('data-go')); });
+  });
+
+  $('btn-client').addEventListener('click', function () { resetClient(); showView('client'); });
+  $('btn-barber').addEventListener('click', function () { openLogin(); });
+
+  /* =====================================================
+     FLUXO DO BARBEIRO — acesso
+     ===================================================== */
+  var loginMode = 'checking';   // checking | setup | login | error
+  var barberPass = '';          // fica só na memória da página
+  var loginTimer = null;
+
+  function setLoginMode(mode) {
+    loginMode = mode;
+    var btn = $('btn-login');
+    var sub = $('login-sub');
+    $('field-confirm').hidden = mode !== 'setup';
+    btn.disabled = false;
+    if (mode === 'setup') {
+      sub.textContent = 'Primeiro acesso: crie a senha que só você vai usar (mínimo de ' + CONFIG.SENHA_MIN + ' caracteres).';
+      $('lbl-pass').textContent = 'Crie sua senha';
+      btn.textContent = 'Criar senha e entrar';
+    } else if (mode === 'login') {
+      sub.textContent = 'Digite sua senha para gerenciar a agenda.';
+      $('lbl-pass').textContent = 'Senha';
+      btn.textContent = 'Entrar';
+    } else if (mode === 'error') {
+      sub.textContent = 'Sem conexão com o servidor.';
+      btn.textContent = 'Tentar de novo';
+    } else {
+      sub.textContent = 'Verificando acesso...';
+      btn.textContent = 'Aguarde...';
+      btn.disabled = true;
+    }
+  }
+
+  function openLogin(notice) {
+    clearTimeout(loginTimer);
+    barberPass = '';
+    $('barber-pass').value = '';
+    $('barber-pass2').value = '';
+    setMsg($('login-msg'), notice || '', notice ? 'err' : '');
+    setLoginMode('checking');
+    showView('barber-login');
+    rpc('senha_definida').then(function (definida) {
+      setLoginMode(definida ? 'login' : 'setup');
+      setTimeout(function () { $('barber-pass').focus(); }, 50);
+    }).catch(function () {
+      setLoginMode('error');
+    });
+  }
+
+  function submitLogin() {
+    var msg = $('login-msg');
+    if (loginMode === 'checking') return;
+    if (loginMode === 'error') { openLogin(); return; }
+
+    var pass = $('barber-pass').value.trim();
+    var btn = $('btn-login');
+
+    if (loginMode === 'setup') {
+      if (pass.length < CONFIG.SENHA_MIN) {
+        setMsg(msg, 'A senha precisa ter pelo menos ' + CONFIG.SENHA_MIN + ' caracteres.', 'err');
+        return;
+      }
+      if (pass !== $('barber-pass2').value.trim()) {
+        setMsg(msg, 'As duas senhas não são iguais.', 'err');
+        return;
+      }
+      btn.disabled = true;
+      setMsg(msg, 'Criando senha...', '');
+      rpc('definir_senha', { p_nova: pass }).then(function () {
+        barberPass = pass;
+        setMsg(msg, 'Senha criada! Entrando no painel...', 'ok');
+        loginTimer = setTimeout(openPanel, 700);
+      }).catch(function (e) {
+        btn.disabled = false;
+        if (e && e.message === 'senha_ja_definida') { setLoginMode('login'); }
+        setMsg(msg, errMsg(e), 'err');
+      });
+      return;
+    }
+
+    // loginMode === 'login'
+    if (!pass) { setMsg(msg, 'Digite a senha.', 'err'); return; }
+    btn.disabled = true;
+    setMsg(msg, 'Conferindo...', '');
+    rpc('verificar_senha', { p_senha: pass }).then(function (ok) {
+      if (ok === true) {
+        barberPass = pass;
+        setMsg(msg, 'Acesso liberado! Entrando no painel...', 'ok');
+        loginTimer = setTimeout(openPanel, 600);
+      } else {
+        btn.disabled = false;
+        setMsg(msg, 'Senha incorreta. Tente novamente.', 'err');
+      }
+    }).catch(function (e) {
+      btn.disabled = false;
+      setMsg(msg, errMsg(e), 'err');
+    });
+  }
+
+  $('btn-login').addEventListener('click', submitLogin);
+  ['barber-pass', 'barber-pass2'].forEach(function (id) {
+    $(id).addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); submitLogin(); }
+    });
+  });
+
+  $('btn-logout').addEventListener('click', function () {
+    barberPass = '';
+    showView('home');
+  });
+
+  /* =====================================================
+     FLUXO DO BARBEIRO — painel
+     ===================================================== */
+  function openPanel() {
+    var dateInput = $('block-date');
+    dateInput.min = todayISO();
+    if (!dateInput.value) dateInput.value = todayISO();
+    setMsg($('block-msg'), '');
+    setMsg($('pass-msg'), '');
+    $('pass-box').open = false;
+    showView('barber-panel');
+    loadBlockedList();
+  }
+
+  (function fillTimeSelect() {
+    var sel = $('block-time');
+    HOURS.forEach(function (t) {
+      var o = document.createElement('option');
+      o.value = t; o.textContent = t;
+      sel.appendChild(o);
+    });
+  })();
+
+  function kickToLogin() {
+    openLogin('Sua senha mudou ou expirou. Entre de novo.');
+  }
+
+  $('btn-block').addEventListener('click', function () {
+    var date = $('block-date').value;
+    var time = $('block-time').value;
+    var msg = $('block-msg');
+    var btn = $('btn-block');
+
+    if (!isValidISODate(date)) { setMsg(msg, 'Escolha uma data.', 'err'); return; }
+    if (date < todayISO()) { setMsg(msg, 'Não é possível bloquear uma data que já passou.', 'err'); return; }
+    if (isBlocked(date, time)) {
+      setMsg(msg, isoToBR(date) + ' às ' + time + ' já está bloqueado.', 'err');
+      return;
+    }
+
+    btn.disabled = true;
+    rpc('bloquear_horario', { p_senha: barberPass, p_data: date, p_hora: time }).then(function () {
+      btn.disabled = false;
+      setMsg(msg, 'Horário bloqueado: ' + isoToBR(date) + ' às ' + time + '.', 'ok');
+      return loadBlockedList();
+    }).catch(function (e) {
+      btn.disabled = false;
+      if (e && e.message === 'senha_invalida') { kickToLogin(); return; }
+      setMsg(msg, errMsg(e), 'err');
+    });
+  });
+
+  function loadBlockedList() {
+    var ul = $('blocked-list');
+    ul.innerHTML = '';
+    $('block-count').textContent = '';
+    var loading = document.createElement('li');
+    loading.className = 'empty';
+    loading.textContent = 'Carregando...';
+    ul.appendChild(loading);
+
+    return fetchBlocked().then(renderBlockedList).catch(function () {
+      ul.innerHTML = '';
+      var li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = 'Não foi possível carregar a lista. Confira a internet.';
+      ul.appendChild(li);
+    });
+  }
+
+  function renderBlockedList(list) {
+    var ul = $('blocked-list');
+    ul.innerHTML = '';
+    $('block-count').textContent = list.length ? list.length + (list.length === 1 ? ' horário' : ' horários') : '';
+
+    if (!list.length) {
+      var li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = 'Nenhum horário bloqueado ainda.';
+      ul.appendChild(li);
+      return;
+    }
+
+    list.forEach(function (b) {
+      var li = document.createElement('li');
+      li.className = 'blocked-item';
+
+      var when = document.createElement('div');
+      when.className = 'when';
+      when.textContent = isoToBR(b.data);
+      var t = document.createElement('span');
+      t.textContent = b.hora;
+      when.appendChild(t);
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-small btn-danger';
+      btn.textContent = 'Desbloquear';
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        rpc('desbloquear_horario', { p_senha: barberPass, p_data: b.data, p_hora: b.hora }).then(function () {
+          setMsg($('block-msg'), 'Horário desbloqueado: ' + isoToBR(b.data) + ' às ' + b.hora + '.', 'ok');
+          return loadBlockedList();
+        }).catch(function (e) {
+          btn.disabled = false;
+          if (e && e.message === 'senha_invalida') { kickToLogin(); return; }
+          setMsg($('block-msg'), errMsg(e), 'err');
+        });
+      });
+
+      li.appendChild(when);
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+  }
+
+  /* ---- Alterar senha ---- */
+  $('btn-change-pass').addEventListener('click', function () {
+    var msg = $('pass-msg');
+    var atual = $('pass-current').value.trim();
+    var nova = $('pass-new').value.trim();
+    if (!atual) { setMsg(msg, 'Digite a senha atual.', 'err'); return; }
+    if (nova.length < CONFIG.SENHA_MIN) {
+      setMsg(msg, 'A nova senha precisa ter pelo menos ' + CONFIG.SENHA_MIN + ' caracteres.', 'err');
+      return;
+    }
+    var btn = $('btn-change-pass');
+    btn.disabled = true;
+    rpc('alterar_senha', { p_atual: atual, p_nova: nova }).then(function () {
+      btn.disabled = false;
+      barberPass = nova;
+      $('pass-current').value = '';
+      $('pass-new').value = '';
+      setMsg(msg, 'Senha alterada com sucesso.', 'ok');
+    }).catch(function (e) {
+      btn.disabled = false;
+      setMsg(msg, errMsg(e), 'err');
+    });
+  });
+
+  /* =====================================================
+     FLUXO DO CLIENTE
+     ===================================================== */
+  var state = { step: 1, service: null, date: '', time: '', name: '' };
+
+  function resetClient() {
+    state = { step: 1, service: null, date: '', time: '', name: '' };
+    $('client-date').value = '';
+    $('client-date').min = todayISO();
+    $('client-name').value = '';
+    setMsg($('name-msg'), '');
+    setMsg($('confirm-msg'), '');
+    $('s1-next').disabled = true;
+    $('s2-next').disabled = true;
+    document.querySelectorAll('#service-cards .card').forEach(function (c) {
+      c.classList.remove('selected');
+      c.setAttribute('aria-checked', 'false');
+    });
+    renderSlots('idle');
+    goStep(1);
+  }
+
+  function goStep(n) {
+    state.step = n;
+    document.querySelectorAll('.step').forEach(function (s) {
+      s.classList.toggle('active', Number(s.getAttribute('data-step')) === n);
+    });
+    document.querySelectorAll('#progress i').forEach(function (bar, i) {
+      bar.classList.toggle('done', i < n);
+    });
+    if (n === 2) loadSlots();
+    if (n === 4) fillSummary();
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('[data-prev]').forEach(function (b) {
+    b.addEventListener('click', function () { goStep(Math.max(1, state.step - 1)); });
+  });
+
+  /* ---- Passo 1: serviços ---- */
+  (function renderServices() {
+    var wrap = $('service-cards');
+    SERVICES.forEach(function (s) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'card';
+      btn.setAttribute('role', 'radio');
+      btn.setAttribute('aria-checked', 'false');
+      btn.dataset.id = s.id;
+
+      var left = document.createElement('div');
+      var n = document.createElement('div'); n.className = 'c-name'; n.textContent = s.name;
+      var d = document.createElement('div'); d.className = 'c-desc'; d.textContent = s.desc;
+      left.appendChild(n); left.appendChild(d);
+
+      var price = document.createElement('div');
+      price.className = 'c-price';
+      price.textContent = brl(s.price);
+
+      btn.appendChild(left); btn.appendChild(price);
+      btn.addEventListener('click', function () {
+        state.service = s;
+        wrap.querySelectorAll('.card').forEach(function (c) {
+          var on = c === btn;
+          c.classList.toggle('selected', on);
+          c.setAttribute('aria-checked', on ? 'true' : 'false');
+        });
+        $('s1-next').disabled = false;
+      });
+      wrap.appendChild(btn);
+    });
+  })();
+
+  $('s1-next').addEventListener('click', function () { if (state.service) goStep(2); });
+
+  /* ---- Passo 2: data e horário ---- */
+  $('client-date').addEventListener('change', function () {
+    state.date = this.value;
+    state.time = '';
+    $('s2-next').disabled = true;
+    loadSlots();
+  });
+
+  function hintText(wrap, text) {
+    var p = document.createElement('p');
+    p.className = 'slots-hint';
+    p.textContent = text;
+    wrap.appendChild(p);
+    return p;
+  }
+
+  function loadSlots() {
+    var date = $('client-date').value;
+    if (!isValidISODate(date) || date < todayISO()) { renderSlots('idle'); return; }
+    renderSlots('loading');
+    fetchBlocked().then(function () {
+      if ($('client-date').value === date) renderSlots('ready');
+    }).catch(function () {
+      if ($('client-date').value === date) renderSlots('error');
+    });
+  }
+
+  function renderSlots(status) {
+    var wrap = $('client-slots-wrap');
+    wrap.innerHTML = '';
+    var date = $('client-date').value;
+
+    if (status === 'idle') {
+      if (isValidISODate(date) && date < todayISO()) {
+        hintText(wrap, 'Essa data já passou. Escolha uma data a partir de hoje.');
+      } else {
+        hintText(wrap, 'Escolha uma data para ver os horários.');
+      }
+      state.time = '';
+      $('s2-next').disabled = true;
+      return;
+    }
+    if (status === 'loading') {
+      hintText(wrap, 'Carregando horários...');
+      $('s2-next').disabled = true;
+      return;
+    }
+    if (status === 'error') {
+      hintText(wrap, 'Não foi possível carregar os horários. Confira a internet.');
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'btn btn-ghost btn-small';
+      retry.textContent = 'Tentar de novo';
+      retry.addEventListener('click', loadSlots);
+      wrap.appendChild(retry);
+      $('s2-next').disabled = true;
+      return;
+    }
+
+    var grid = document.createElement('div');
+    grid.className = 'slots';
+    var anyFree = false;
+
+    HOURS.forEach(function (t) {
+      var busy = isBlocked(date, t);
+      var passed = !busy && isPastSlot(date, t);
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot';
+      btn.textContent = t;
+
+      if (busy || passed) {
+        btn.disabled = true;
+        var small = document.createElement('small');
+        small.textContent = busy ? '(Ocupado)' : '(Encerrado)';
+        btn.appendChild(small);
+        if (state.time === t) state.time = '';
+      } else {
+        anyFree = true;
+        if (state.time === t) btn.classList.add('selected');
+        btn.addEventListener('click', function () {
+          state.time = t;
+          grid.querySelectorAll('.slot').forEach(function (s) { s.classList.remove('selected'); });
+          btn.classList.add('selected');
+          $('s2-next').disabled = false;
+        });
+      }
+      grid.appendChild(btn);
+    });
+
+    wrap.appendChild(grid);
+    if (!anyFree) hintText(wrap, 'Sem horários livres neste dia. Tente outra data.');
+    $('s2-next').disabled = !state.time;
+  }
+
+  $('s2-next').addEventListener('click', function () {
+    state.date = $('client-date').value;
+    if (!state.time || !isValidISODate(state.date)) return;
+    goStep(3);
+    setTimeout(function () { $('client-name').focus(); }, 50);
+  });
+
+  // Ao voltar para a aba, atualiza os horários (o barbeiro pode ter bloqueado algum)
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible' &&
+        views.client.classList.contains('active') && state.step === 2) {
+      loadSlots();
+    }
+  });
+
+  /* ---- Passo 3: nome ---- */
+  function goToConfirm() {
+    var name = $('client-name').value.trim().replace(/\s+/g, ' ');
+    var msg = $('name-msg');
+    if (name.length < 2) { setMsg(msg, 'Digite seu nome para continuar.', 'err'); return; }
+    setMsg(msg, '');
+    state.name = name;
+    goStep(4);
+  }
+  $('s3-next').addEventListener('click', goToConfirm);
+  $('client-name').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); goToConfirm(); }
+  });
+
+  /* ---- Passo 4: confirmar e abrir WhatsApp ---- */
+  function fillSummary() {
+    $('sum-name').textContent = state.name;
+    $('sum-service').textContent = state.service ? state.service.name : '';
+    $('sum-date').textContent = state.date ? isoToBR(state.date) : '';
+    $('sum-time').textContent = state.time;
+    $('sum-price').textContent = state.service ? brl(state.service.price) : '';
+    setMsg($('confirm-msg'), '');
+  }
+
+  $('btn-finish').addEventListener('click', function () {
+    var err = $('confirm-msg');
+    var btn = $('btn-finish');
+    setMsg(err, '', 'err');
+
+    if (!state.service || !state.date || !state.time || !state.name) {
+      setMsg(err, 'Faltam informações. Volte e preencha todos os passos.', 'err');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Conferindo horário...';
+
+    // Confere no servidor se o horário continua livre antes de abrir o WhatsApp
+    fetchBlocked().then(function () {
+      btn.disabled = false;
+      btn.textContent = 'Concluir Agendamento';
+
+      if (isBlocked(state.date, state.time) || isPastSlot(state.date, state.time)) {
+        setMsg(err, 'Esse horário não está mais disponível. Escolha outro.', 'err');
+        state.time = '';
+        $('s2-next').disabled = true;
+        goStep(2);
+        return;
+      }
+
+      var texto = 'Olá! Gostaria de agendar um horário. ' +
+        'Nome: ' + state.name +
+        ' | Serviço: ' + state.service.name +
+        ' | Dia: ' + isoToBR(state.date) +
+        ' | Horário: ' + state.time;
+
+      var url = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(texto);
+
+      setMsg(err, 'Abrindo o WhatsApp... Se não abrir, ', 'ok');
+      var link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'toque aqui para abrir.';
+      link.style.color = 'var(--gold-light)';
+      err.appendChild(link);
+
+      var win = window.open(url, '_blank');
+      if (win) { try { win.opener = null; } catch (e) { /* ignora */ } }
+      else { window.location.href = url; }
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = 'Concluir Agendamento';
+      setMsg(err, 'Não consegui confirmar a disponibilidade do horário. Confira a internet e tente de novo.', 'err');
+    });
+  });
+
+  renderSlots('idle');
+})();
+</script>
+</body>
+</html>
